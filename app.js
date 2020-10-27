@@ -5,6 +5,8 @@ const path = require('path');
 
 /* 라우터 등록 */
 const memberRouter = require('./routes/member');
+const sqlRouter = require('./routes/sql');
+
 
 /* 서버구동 */
 app.listen(3000, () => {console.log('http://127.0.0.1:3000')});
@@ -21,5 +23,6 @@ app.use(express.urlencoded({extended: false}));
 //전역라우터
 app.use('/', express.static(path.join(__dirname, './public')));
 app.use('/storage', express.static(path.join(__dirname, './uploads')));//절대경로, static(절대경로)
-//라우터 등록
+//라우터 등록(미들웨어)
 app.use('/member', memberRouter);
+app.use('/sql', sqlRouter);
