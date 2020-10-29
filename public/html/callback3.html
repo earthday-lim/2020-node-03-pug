@@ -1,0 +1,69 @@
+<script>
+  function callbackSum(a, b, fn) {
+    if(typeof a === 'number' && typeof b === 'number'){
+        fn(null, a + b);//콜백함수에서 첫번째 자리는 오류를 받는 값이므로 에러가 없으면(null) 함수실행
+      }else{
+        fn("매개변수는 숫자여야 합니다.", null);//에러가 발생했음로 오류를 받는 자리인 첫번째 자리가 채워줌, else절에선 뒤에 null필요없음 
+      }
+  }
+
+  function callbackDate(day, fn) {
+    var dt = new Date().getTime() + day * 1000 * 60 * 60 * 24;
+    fn(new Date(dt));
+  }
+
+  callbackSum(10, 20, function(err, result){
+    if(err) console.log("ERROR: " + err);
+    else{
+      callbackDate(result, function(r) {
+        console.log(`현재 시간에 ${result}를 더하면 ${r}입니다.`);
+      });
+    }
+  });
+  
+  function promiseSum(a,b) { //callback함수의 늪에서 벗어나기 위한 방법 : promise
+    return new Promise(function(resolve, reject) {
+      if(typeof a === 'number' && typeof b === 'number'){
+        resolve(a + b);
+      }else{
+        reject("매개변수는 숫자여야 합니다.");
+      }
+    });
+  }
+
+  function promiseDate(day) {
+    return new Promise(function(resolve, reject) {
+      if(typeof day === 'number') {
+        var dt = new Date().getTime() + day * 1000 * 60 * 60 * 24;
+        resolve(new Date(dt));
+      }else reject('매개변수는 숫자형식여야 합니다.');
+    })
+  }
+
+
+  promiseSum(10, 20)// .앞에선 enter가능
+  .then(function(r){ //resolve 함수
+    //성공했을 때 실행하는 함수
+    console.log("두 변수의 합은" + r +" 입니다.");
+    return promiseDate(r);
+  })
+  .then(function(r){ //resolve 함수
+    console.log(`${r}입니다.`);
+  })
+  .catch(function(err){ //reject 함수
+    //실패했을 때 실행하는 함수
+    console.log(err);
+  });
+
+  //IIFE
+  (async function() {
+    try{
+      var r = await promiseSum(10, "20");
+      var r2 = await promiseDate(r);
+      console.log(r, r2);
+    }catch(e){
+      console.log(e);
+    }
+    
+  })(); //()(); 즉시 실행 : 괄호를 실행하시오
+</script>
